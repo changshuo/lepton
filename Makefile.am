@@ -1,14 +1,18 @@
 includes = -I$(srcdir)/dependencies/xz/src/liblzma/api -I$(srcdir)/src/vp8/util -I$(srcdir)/src/vp8/model -I$(srcdir)/src/vp8/decoder -I$(srcdir)/src/vp8/encoder -I$(srcdir)/dependencies -I$(srcdir)/dependencies -I$(srcdir)/dependencies/xz/src/liblzma/common -I$(srcdir)/dependencies/xz/src/common -I$(srcdir)/dependencies/xz/src/liblzma/lzma -I$(srcdir)/dependencies/xz/src/liblzma/lz -I$(srcdir)/dependencies/xz/src/liblzma/check -I$(srcdir)/dependencies/xz/src/liblzma/rangecoder -I$(srcdir)/dependencies/xz/src/liblzma/api -I$(srcdir)/dependencies/xz/src/liblzma/simple -I$(srcdir)/dependencies/xz/src/liblzma/delta -I$(srcdir)/dependencies/xz/src/liblzma
 
-AM_CXXFLAGS = $(CXX11_FLAGS) $(PICKY_CXXFLAGS) $(ARCH_FLAGS) $(SANITIZE_FLAGS) $(NODEBUG_CXXFLAGS) -DGIT_REVISION=\"$(shell git describe --dirty --always)\" $(includes)
 
-AM_CFLAGS = $(C99_FLAGS) $(PICKY_CFLAGS) $(ARCH_FLAGS) $(SANITIZE_FLAGS) $(NODEBUG_CXXFLAGS)
 
-noinst_LIBRARIES = liblocalzlib.a libtestdriver.a liblocalmd5.a
+liblocalmd5_a_SOURCES = dependencies/md5/md5.c
+
+AM_CXXFLAGS = $(CXX11_FLAGS) $(CODEC_FLAGS) $(SYSTEM_DEPENDENCIES_CFLAGS) $(THREAD_FLAGS) $(PICKY_CXXFLAGS) $(ARCH_FLAGS) $(SANITIZE_FLAGS) $(NODEBUG_CXXFLAGS) -DGIT_REVISION=\"$(shell git describe --dirty --always 2> /dev/null || basename `pwd`)\" $(includes)
+
+AM_CFLAGS = $(C99_FLAGS) $(CODEC_FLAGS) $(THREAD_FLAGS) $(PICKY_CFLAGS) $(ARCH_FLAGS) $(SANITIZE_FLAGS) $(NODEBUG_CXXFLAGS)
+
+noinst_LIBRARIES = liblocalzlib.a liblocalmd5.a libtestdriver.a
 
 bin_PROGRAMS = lepton test_suite/test_invariants
 
-lepton_LDADD = liblocalmd5.a liblocalzlib.a -lpthread
+lepton_LDADD = liblocalmd5.a $(SYSTEM_DEPENDENCIES_LDFLAGS) -lpthread
 
 lepton_SOURCES = \
    src/io/MemReadWriter.cc \
@@ -93,8 +97,6 @@ lepton_SOURCES = \
    src/vp8/encoder/vpx_bool_writer.hh \
    src/vp8/decoder/vpx_bool_reader.hh
 
-liblocalmd5_a_SOURCES = dependencies/md5/md5.c
-
 liblocalzlib_a_SOURCES = dependencies/zlib/inflate.c \
 dependencies/zlib/inflate.h \
 dependencies/zlib/gzguts.h \
@@ -141,7 +143,7 @@ test_suite_test_invariants_SOURCES = test_suite/test_invariants.cc    src/io/All
    src/io/MemMgrAllocator.hh \
    src/io/DecoderPlatform.hh
 
-test_suite_test_invariants_LDADD = liblocalzlib.a liblocalmd5.a
+test_suite_test_invariants_LDADD = $(SYSTEM_DEPENDENCIES_LDFLAGS) liblocalmd5.a
 
 check_PROGRAMS = test_suite/test_recode_memory_bound test_suite/test_truncate_lowmem test_suite/test_android_lowmem test_suite/test_invariants test_suite/test_baseline_ujg test_suite/test_baseline test_suite/test_misc test_suite/test_iphone test_suite/test_phone_outdoor test_suite/test_truncate_ujg test_suite/test_truncate test_suite/test_SLR test_suite/test_progressive_ujg test_suite/test_progressive_disallowed test_suite/test_progressive test_suite/test_arithmetic_failfast test_suite/test_hq test_suite/test_baseline_unjailed test_suite/test_baseline_unjailed_thread test_suite/test_baseline_unjailed_decode test_suite/test_baseline_unjailed_decode_thread test_suite/test_seccomp_encode_main test_suite/test_seccomp_encode_thread  test_suite/test_seccomp_decode_main test_suite/test_seccomp_decode_thread test_suite/test_nofsync test_suite/test_colorswap test_suite/test_odd_rst test_suite/test_trailing_header test_suite/test_trailing_rst test_suite/test_gray2sf test_suite/test_truncated_zero_run test_suite/test_bad_zero_run
 
@@ -225,7 +227,7 @@ test_suite_test_progressive_CXXFLAGS = $(AM_CXXFLAGS) -DUSE_LEPTON -DTEST_FILE=i
 test_suite_test_progressive_LDADD = libtestdriver.a -lpthread
 
 test_suite_test_progressive_disallowed_SOURCES = test_suite/test_harness.cc
-test_suite_test_progressive_disallowed_CXXFLAGS = $(AM_CXXFLAGS) -DUSE_LEPTON -DTEST_FILE=iphoneprogressive -DEXPECT_FAILURE
+test_suite_test_progressive_disallowed_CXXFLAGS = $(AM_CXXFLAGS) -DUSE_LEPTON -DTEST_FILE=iphoneprogressive -DEXPECT_FAILURE -DDISALLOW_PROGRESSIVE
 test_suite_test_progressive_disallowed_LDADD = libtestdriver.a -lpthread
 
 test_suite_test_truncate_ujg_SOURCES = test_suite/test_harness.cc
@@ -273,3 +275,6 @@ test_suite_test_trailing_rst_LDADD = libtestdriver.a -lpthread
 TESTS = test_suite/test_recode_memory_bound test_suite/test_invariants test_suite/test_baseline_ujg test_suite/test_baseline test_suite/test_misc test_suite/test_iphone test_suite/test_phone_outdoor test_suite/test_truncate_ujg test_suite/test_truncate test_suite/test_android_lowmem test_suite/test_SLR test_suite/test_progressive_ujg test_suite/test_progressive_disallowed test_suite/test_progressive test_suite/test_arithmetic_failfast test_suite/test_hq test_suite/forktester.py test_suite/sockettester.py src/lepton/test_custom_table.sh test_suite/test_baseline_unjailed test_suite/test_baseline_unjailed_thread test_suite/test_baseline_unjailed_decode test_suite/test_baseline_unjailed_decode_thread test_suite/test_seccomp_encode_main test_suite/test_seccomp_encode_thread  test_suite/test_seccomp_decode_main test_suite/test_seccomp_decode_thread test_suite/test_truncate_lowmem test_suite/test_nofsync test_suite/test_colorswap test_suite/test_odd_rst test_suite/test_trailing_header test_suite/test_trailing_rst test_suite/test_legacy.sh test_suite/test_gray2sf test_suite/test_2nd_block.sh test_suite/test_3rd_block.sh test_suite/test_last_block.sh test_suite/test_truncated_zero_run test_suite/test_bad_zero_run
 
 dist_check_SCRIPTS = test_suite/test_recode_memory_bound test_suite/test_invariants test_suite/test_baseline_ujg test_suite/test_baseline test_suite/test_misc test_suite/test_iphone test_suite/test_phone_outdoor test_suite/test_truncate_ujg test_suite/test_truncate test_suite/test_android_lowmem test_suite/test_SLR test_suite/test_progressive_ujg test_suite/test_progressive_disallowed test_suite/test_progressive test_suite/test_arithmetic_failfast test_suite/test_hq test_suite/test_baseline_unjailed test_suite/test_baseline_unjailed_thread test_suite/test_baseline_unjailed_decode test_suite/test_baseline_unjailed_decode_thread test_suite/test_seccomp_encode_main test_suite/test_seccomp_encode_thread  test_suite/test_seccomp_decode_main test_suite/test_seccomp_decode_thread test_suite/test_truncate_lowmem test_suite/test_nofsync test_suite/test_colorswap test_suite/test_odd_rst test_suite/test_trailing_header test_suite/test_trailing_rst test_suite/test_legacy.sh test_suite/test_gray2sf test_suite/test_2nd_block.sh test_suite/test_3rd_block.sh test_suite/test_last_block.sh test_suite/test_truncated_zero_run test_suite/test_bad_zero_run
+
+test:
+	$(MAKE) check

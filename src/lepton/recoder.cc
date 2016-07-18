@@ -14,16 +14,20 @@
 int next_mcuposn(int* cmp, int* dpos, int* rstw );
 extern BaseDecoder *g_decoder;
 extern UncompressedComponents colldata; // baseline sorted DCT coefficients
-extern componentInfo cmpnfo[ 4 ];
+
 extern char padbit;
 
-extern int cs_cmp[ 4 ];
+
+extern Sirikata::Array1d<int, 4> cs_cmp; // component numbers  in current scan
+extern Sirikata::Array1d<componentInfo, 4> cmpnfo;
+
 extern int grbs;   // size of garbage
 extern int            hdrs;   // size of header
-extern unsigned short qtables[4][64];                // quantization tables
-extern huffCodes      hcodes[2][4];                // huffman codes
-extern huffTree       htrees[2][4];                // huffman decoding trees
-extern unsigned char  htset[2][4];                    // 1 if huffman table is set
+extern Sirikata::Array1d<Sirikata::Array1d<unsigned short, 64>, 4> qtables; // quantization tables
+extern Sirikata::Array1d<Sirikata::Array1d<huffCodes, 4>, 2> hcodes; // huffman codes
+extern Sirikata::Array1d<Sirikata::Array1d<huffTree, 4>, 2> htrees; // huffman decoding trees
+extern Sirikata::Array1d<Sirikata::Array1d<unsigned char, 4>, 2> htset;// 1 if huffman table is set
+
 extern unsigned char* grbgdata;    // garbage data
 extern unsigned char* hdrdata;   // header data
 extern int            rsti;
@@ -98,7 +102,7 @@ int find_aligned_end_64(const int16_t *block) {
 #endif
 
 static bool aligned_memchr16ff(const unsigned char *local_huff_data) {
-#if 1
+#if !defined(__i386__)
     __m128i buf = _mm_load_si128((__m128i const*)local_huff_data);
     __m128i ff = _mm_set1_epi8(-1);
     __m128i res = _mm_cmpeq_epi8(buf, ff);

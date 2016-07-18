@@ -11,7 +11,11 @@
 #endif
 #include "Reader.hh"
 #include "ioutil.hh"
+#ifdef USE_SYSTEM_MD5_DEPENDENCY
+#include <openssl/md5.h>
+#else
 #include "../../dependencies/md5/md5.h"
+#endif
 #ifdef _WIN32
 #include <Windows.h>
 #include <tchar.h>
@@ -324,17 +328,11 @@ Sirikata::Array1d<uint8_t, 16> transfer_and_md5(Sirikata::Array1d<uint8_t, 2> he
     int copy_to_input_tee_flags = 0;
     int input_tee_flags = 0;
     int copy_to_storage_flags = 0;
-#ifndef __APPLE__
     input_tee_flags = fcntl(input_tee, F_GETFL, 0);
-#endif
     fcntl(input_tee, F_SETFL, input_tee_flags | O_NONBLOCK);
-#ifndef __APPLE__
     copy_to_input_tee_flags = fcntl(copy_to_input_tee, F_GETFL, 0);
-#endif
     fcntl(copy_to_input_tee, F_SETFL, copy_to_input_tee_flags | O_NONBLOCK);
-#ifndef __APPLE__
     copy_to_storage_flags = fcntl(copy_to_storage, F_GETFL, 0);
-#endif
     fcntl(copy_to_storage, F_SETFL, copy_to_storage_flags | O_NONBLOCK);
     static_assert(sizeof(buffer) >= header.size(), "Buffer must be able to hold header");
     uint32_t cursor = 0;
@@ -566,6 +564,8 @@ SubprocessConnection start_subprocess(int argc, const char **argv, bool pipe_std
 
     if (pipe_stderr || !simpler) {
         siStartInfo.hStdError = hChildStd_ERR_Wr;
+    } else {
+        siStartInfo.hStdError = GetStdHandle(STD_ERROR_HANDLE);
     }
     siStartInfo.hStdOutput = hChildStd_OUT_Wr;
     siStartInfo.hStdInput = hChildStd_IN_Rd;
