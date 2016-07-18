@@ -39,7 +39,6 @@
 #endif
 #include <algorithm>
 #include <cstdint>
-#include "DecoderPlatform.hh"
 #include "MemMgrAllocator.hh"
 #if (defined(__APPLE__) || __cplusplus <= 199711L) && !defined(_WIN32)
 #define THREAD_LOCAL_STORAGE __thread

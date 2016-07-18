@@ -28,9 +28,13 @@
  */
 #ifndef _SIRIKATA_JPEG_ARHC_ALLOCATOR_HPP_
 #define _SIRIKATA_JPEG_ARHC_ALLOCATOR_HPP_
-#include <stdlib.h>
-#include "DecoderPlatform.hh"
-namespace Sirikata {
+
+module allocator;
+import allocatorstd;
+import decoderplatform;
+//#include "DecoderPlatform.hh"
+
+export namespace Sirikata {
 
 template<class T> class JpegAllocator {
     typedef std::true_type propagate_on_container_move_assignment;

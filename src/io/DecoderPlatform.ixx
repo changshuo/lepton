@@ -26,24 +26,25 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _SIRIKATA_READER_HPP_
-#define _SIRIKATA_READER_HPP_
+module decoderplatform;
+import decoderplatformstd;
+#include "DecoderPlatformDefs.hh"
+//#ifndef _DECODER_PLATFORM_HH_
+//#define _DECODER_PLATFORM_HH_
 
-#include "Allocator.hh"
-#include "Error.hh"
-namespace Sirikata {
-class SIRIKATA_EXPORT DecoderReader {
-public:
-    virtual std::pair<uint32, JpegError> Read(uint8*data, unsigned int size) = 0;
-    virtual ~DecoderReader(){}
-};
-class SIRIKATA_EXPORT DecoderWriter {
-public:
-    virtual std::pair<uint32, JpegError> Write(const uint8*data, unsigned int size) = 0;
-    virtual void Close() = 0;
-    virtual ~DecoderWriter(){}
-};
-
-SIRIKATA_FUNCTION_EXPORT JpegError Copy(DecoderReader &r, DecoderWriter &w, const JpegAllocator<uint8> &alloc);
+//#ifdef _WIN32
+export inline int write(int fd, const void*data, size_t length) {
+    return _write(fd, data, length);
 }
-#endif
+export inline int read(int fd, void*data, size_t length) {
+    return _read(fd, data, length);
+}
+export inline int close(int fd) {
+    return _close(fd);
+}
+export typedef int ssize_t;
+export using std::size_t;
+//#endif
+
+
+//#endif

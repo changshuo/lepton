@@ -17,7 +17,7 @@
 #endif
 #include <errno.h>
 #include "jpgcoder.hh"
-#include "../io/ioutil.hh"
+//#include "../io/ioutil.hh"
 static char hex_nibble(uint8_t val) {
     if (val < 10) return val + '0';
     return val - 10 + 'a';

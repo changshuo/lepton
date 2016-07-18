@@ -31,15 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 This file contains special classes for bitwise
 reading and writing of arrays
 */
-#include "../../vp8/util/memory.hh"
+#include "..\vp8\util\memory.hh"
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
 #include <algorithm>
 #include <assert.h>
 extern "C" {
-#include "../../dependencies/md5/md5.h"
+//#include "../../dependencies/md5/md5.h"
 }
+import md5;
 #include "bitops.hh"
 
 #define BUFFER_SIZE 1024 * 1024
@@ -57,7 +58,7 @@ void compute_md5(const char * filename, unsigned char *result) {
 }
 /* -----------------------------------------------
 	constructor for abitreader class
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 abitreader::abitreader( unsigned char* array, int size )
 {
@@ -70,7 +71,7 @@ abitreader::abitreader( unsigned char* array, int size )
 
 /* -----------------------------------------------
 	destructor for abitreader class
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 abitreader::~abitreader( void )
 {
@@ -80,7 +81,7 @@ abitreader::~abitreader( void )
 
 /* -----------------------------------------------
 	constructor for abitwriter class
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 abitwriter::abitwriter( int size , int max_file_size)
 {
@@ -108,7 +109,7 @@ abitwriter::abitwriter( int size , int max_file_size)
 
 /* -----------------------------------------------
 	destructor for abitwriter class
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 abitwriter::~abitwriter( void )
 {
@@ -138,16 +139,16 @@ unsigned char *aligned_alloc(size_t dsize) {
 }
 /* -----------------------------------------------
 	constructor for abytewriter class
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 abytewriter::abytewriter( int size )
 {
 	adds  = 65536;
 	cbyte = 0;
-	
+
 	error = false;
 	fmem  = true;
-	
+
 	dsize = ( size > 0 ) ? size : adds;
     data = aligned_alloc(dsize);
 	if ( data == NULL ) {
@@ -159,7 +160,7 @@ abytewriter::abytewriter( int size )
 
 /* -----------------------------------------------
 	destructor for abytewriter class
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 abytewriter::~abytewriter( void )
 {
@@ -169,13 +170,13 @@ abytewriter::~abytewriter( void )
 
 /* -----------------------------------------------
 	writes 1 byte to abytewriter
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 void abytewriter::write( unsigned char byte )
 {
 	// safety check for error
 	if ( error ) return;
-	
+
 	// test if pointer beyond flush threshold
 	if ( cbyte >= ( dsize - 2 ) ) {
         if (data) {
@@ -191,7 +192,7 @@ void abytewriter::write( unsigned char byte )
 			return;
 		}
 	}
-	
+
 	// write data
 	data[ cbyte++ ] = byte;
 }
@@ -238,7 +239,7 @@ unsigned char* abytewriter::getptr_aligned( void )
 /* -----------------------------------------------
 	peeks into data array from abytewriter
 	----------------------------------------------- */
-	
+
 unsigned char* abytewriter::peekptr_aligned( void )
 {
 	return data;
@@ -246,7 +247,7 @@ unsigned char* abytewriter::peekptr_aligned( void )
 
 /* -----------------------------------------------
 	gets size of data array from abytewriter
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 int abytewriter::getpos( void )
 {
@@ -255,8 +256,8 @@ int abytewriter::getpos( void )
 
 /* -----------------------------------------------
 	reset without realloc
-	----------------------------------------------- */	
-	
+	----------------------------------------------- */
+
 void abytewriter::reset( void )
 {
 	// set position of current byte
@@ -272,10 +273,10 @@ abytereader::abytereader( unsigned char* array, int size )
 {
 	cbyte = 0;
 	eof = false;
-	
+
 	data = array;
 	lbyte = size;
-	
+
 	if ( ( data == NULL ) || ( lbyte == 0 ) )
 		eof = true;
 }
@@ -308,12 +309,12 @@ int abytereader::read( unsigned char* byte )
 /* -----------------------------------------------
 	reads n bytes from abytereader
 	----------------------------------------------- */
-	
+
 int abytereader::read_n( unsigned char* byte, int n )
 {
 	int nl = lbyte - cbyte;
 	int i;
-	
+
 	if ( nl < n ) {
 		for ( i = 0; i < nl; i++ )
 			byte[ i ] = data[ cbyte + i ];
@@ -332,7 +333,7 @@ int abytereader::read_n( unsigned char* byte, int n )
 /* -----------------------------------------------
 	go to position in data
 	----------------------------------------------- */
-	
+
 void abytereader::seek( int pos )
 {
 	if ( pos >= lbyte ) {
@@ -348,7 +349,7 @@ void abytereader::seek( int pos )
 /* -----------------------------------------------
 	gets size of current data
 	----------------------------------------------- */
-	
+
 int abytereader::getsize( void )
 {
 	return lbyte;
@@ -356,7 +357,7 @@ int abytereader::getsize( void )
 
 /* -----------------------------------------------
 	gets current position from abytereader
-	----------------------------------------------- */	
+	----------------------------------------------- */
 
 int abytereader::getpos( void )
 {
@@ -365,7 +366,7 @@ int abytereader::getpos( void )
 
 bounded_iostream::bounded_iostream(Sirikata::DecoderWriter *w,
                                    const std::function<void(Sirikata::DecoderWriter*, size_t)> &size_callback,
-                                   const Sirikata::JpegAllocator<uint8_t> &alloc) 
+                                   const Sirikata::JpegAllocator<uint8_t> &alloc)
     : parent(w), err(Sirikata::JpegError::nil()) {
     this->size_callback = size_callback;
     buffer_position = 0;
@@ -450,7 +451,7 @@ unsigned int ibytestreamcopier::read(unsigned char *output, unsigned int size) {
     return retval;
 }
 ibytestream::ibytestream(Sirikata::DecoderReader *p, unsigned int byte_offset,
-                         const Sirikata::JpegAllocator<uint8_t> &alloc) 
+                         const Sirikata::JpegAllocator<uint8_t> &alloc)
     : parent(p) {
     bytes_read = byte_offset;
 }

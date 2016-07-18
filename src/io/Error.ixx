@@ -29,9 +29,11 @@
 #ifndef _SIRIKATA_JPEG_ARHC_ERROR_HPP_
 #define _SIRIKATA_JPEG_ARHC_ERROR_HPP_
 
+module error;
+
 namespace Sirikata {
 
-class JpegError {
+export class JpegError {
     explicit JpegError(const char * ):mWhat(ERR_MISC) {
     }
 public:

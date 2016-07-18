@@ -8,7 +8,7 @@
 #include <signal.h>
 #include "../vp8/util/nd_array.hh"
 #include "../io/MuxReader.hh"
-#include "../io/ioutil.hh"
+//#include "../io/ioutil.hh"
 #include "validation.hh"
 ValidationContinuation validateAndCompress(int *reader,
                                            int *writer,
@@ -160,7 +160,7 @@ ValidationContinuation validateAndCompress(int *reader,
     if (roundtrip_size != size || memcmp(&md5[0], &rtmd5[0], md5.size()) != 0) {
         fprintf(stderr, "Input Size %ld != Roundtrip Size %ld\n", size, roundtrip_size);
         for (size_t i = 0; i < md5.size(); ++i) {
-            fprintf(stderr, "%02x", md5[i]);            
+            fprintf(stderr, "%02x", md5[i]);
         }
         fprintf(stderr, " != ");
         for (size_t i = 0; i < rtmd5.size(); ++i) {
@@ -169,7 +169,7 @@ ValidationContinuation validateAndCompress(int *reader,
         fprintf(stderr, "\n");
         custom_exit(ExitCode::ROUNDTRIP_FAILURE);
     }
-    
+
     status = 0;
     while (waitpid(decode_pid, &status, 0) < 0 && errno == EINTR) {} // wait on encode
     if (WIFEXITED(status)) {

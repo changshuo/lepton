@@ -8,10 +8,16 @@
 #endif
 #include "../vp8/util/nd_array.hh"
 #include "MuxReader.hh"
+
+//module ioutil;
+
 namespace Sirikata {
 class DecoderReader;
 class DecoderWriter;
 }
+
+#define MakeJpegError(s) JpegError::MakeFromStringLiteralOnlyCallFromMacro("" s)
+
 namespace IOUtil {
 //#ifdef _WIN32
 //    typedef void* HANDLE_or_fd;

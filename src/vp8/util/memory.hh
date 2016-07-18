@@ -6,8 +6,8 @@
 #include <assert.h>
 #include <cstdio>
 #include <cstring>
-#include "../../io/DecoderPlatform.hh"
-#include "../../io/MemMgrAllocator.hh"
+#include "DecoderPlatformDefs.hh"
+
 extern bool g_use_seccomp;
 
 #define FOREACH_EXIT_CODE(CB)                   \

@@ -29,6 +29,8 @@
 
 #include "ZlibCompression.hh"
 
+#define MakeJpegError(s) JpegError::MakeFromStringLiteralOnlyCallFromMacro("" s)
+
 namespace Sirikata {
 JpegAllocator<uint8_t> alloc;
 

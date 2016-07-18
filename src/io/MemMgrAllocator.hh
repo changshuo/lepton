@@ -36,8 +36,11 @@
 #ifndef _MEM_MGR_ALLOCATOR_HH_
 #define _MEM_MGR_ALLOCATOR_HH_
 
-#include "DecoderPlatform.hh"
-namespace Sirikata {
+module memmgrallocator;
+import decoderplatformstd;
+#include "DecoderPlatformDefs.hh"
+
+export namespace Sirikata {
 // Initialize the memory manager. This function should be called
 // exactly once per thread that wishes to allocate memory
 //
@@ -65,7 +68,7 @@ SIRIKATA_FUNCTION_EXPORT size_t memmgr_total_size_ever_allocated();
 SIRIKATA_FUNCTION_EXPORT size_t memmgr_size_left();
 
 }
-namespace Sirikata {
+export namespace Sirikata {
 SIRIKATA_FUNCTION_EXPORT void *MemMgrAllocatorMalloc(void *opaque, size_t nmemb, size_t size);
 SIRIKATA_FUNCTION_EXPORT void MemMgrAllocatorFree (void *opaque, void *ptr);
 SIRIKATA_FUNCTION_EXPORT void * MemMgrAllocatorInit(size_t prealloc_size, size_t worker_size, size_t num_workers, unsigned char alignment);

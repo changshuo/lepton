@@ -1,4 +1,4 @@
-#include "../../vp8/util/memory.hh"
+#include "..\vp8\util\memory.hh"
 #include <string.h>
 #ifdef _WIN32
 #include <io.h>
@@ -9,9 +9,12 @@
 #else
 #include <poll.h>
 #endif
-#include "Reader.hh"
+//#include "Reader.hh"
+import reader;
+import md5;
 #include "ioutil.hh"
-#include "../../dependencies/md5/md5.h"
+//#include "../../dependencies/md5/md5.h"
+
 #ifdef _WIN32
 #include <Windows.h>
 #include <tchar.h>
@@ -309,7 +312,7 @@ Sirikata::Array1d<uint8_t, 16> transfer_and_md5(Sirikata::Array1d<uint8_t, 2> he
         storage->resize(old_size + ret);
         if (ret == 0) {
             break;
-        }        
+        }
     }
     fclose(fp);
 #endif

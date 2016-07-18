@@ -30,9 +30,10 @@
 #define _SIRIKATA_MUX_READER_HPP_
 #include <assert.h>
 #include <algorithm>
-#include "Allocator.hh"
-#include "Error.hh"
-#include "Reader.hh"
+import allocator;
+import error;
+import reader;
+//#include "Reader.hh"
 namespace Sirikata {
 
 class SIRIKATA_EXPORT MuxReader {
@@ -325,7 +326,7 @@ public:
             assert(false && "We shouldn't reach this");
             return flushFull(stream_id, toBeFlushed);
         }
-        
+
         if (toBeFlushed < 16384) {
             if (toBeFlushed > 8192) {
                 return flushFull(stream_id, toBeFlushed);

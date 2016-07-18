@@ -1,0 +1,2 @@
+rm *.obj, *.ifc, *.exe
+

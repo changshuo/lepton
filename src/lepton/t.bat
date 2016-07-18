@@ -1,0 +1,1 @@
+REM cl /c /EHsc /experimental:module validation.ixx

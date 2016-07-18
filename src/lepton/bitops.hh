@@ -53,7 +53,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <functional>
 #include "../io/Reader.hh"
-#include "../io/ioutil.hh"
+//#include "../io/ioutil.hh"
+import ioutil;
 #include "../vp8/util/vpx_config.hh"
 
 void compute_md5(const char * filename, unsigned char *result);
